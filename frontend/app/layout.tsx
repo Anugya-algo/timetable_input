@@ -44,9 +44,9 @@ export default function RootLayout({
                 <Image
                   src="/image.png"
                   alt="AcadSync Logo"
-                  width={56}
-                  height={56}
-                  className="rounded-xl shadow-lg bg-white p-1.5"
+                  width={80}
+                  height={80}
+                  className="rounded-xl"
                 />
                 <div>
                   <span className="font-bold text-2xl tracking-tight drop-shadow-sm">AcadSync</span>
