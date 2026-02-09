@@ -5,58 +5,71 @@ from .cloudinary_service import CloudinaryService
 
 class UploadPDFView(views.APIView):
     """Upload PDF directly to Cloudinary."""
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]  # Allow unauthenticated for testing
     parser_classes = [MultiPartParser, FormParser]
 
     def post(self, request):
+        print("=== PDF Upload Request ===")
         file = request.FILES.get('file')
         note = request.data.get('note', '')
+        department = request.data.get('department', 'default')
         
         if not file:
+            print("Error: No file provided")
             return response.Response(
                 {'error': 'File is required'}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
         
+        print(f"File received: {file.name}, size: {file.size}")
+        
         # Validate file type
         if not file.name.lower().endswith('.pdf'):
+            print("Error: Not a PDF file")
             return response.Response(
                 {'error': 'Only PDF files are allowed'}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        # Get department from user
-        department_id = getattr(request.user, 'department_id', None)
-        if not department_id:
-            # For testing, allow upload without department
-            department_id = 'default'
-        
         # Upload to Cloudinary
+        print(f"Uploading to Cloudinary, folder: timetable_pdfs/{department}")
         cloudinary_service = CloudinaryService()
-        folder = f"timetable_pdfs/{department_id}"
+        folder = f"timetable_pdfs/{department}"
         
-        result = cloudinary_service.upload_file(
-            file,
-            folder=folder,
-            resource_type="raw"
-        )
-        
-        if not result:
+        try:
+            result = cloudinary_service.upload_file(
+                file,
+                folder=folder,
+                resource_type="raw"
+            )
+        except Exception as e:
+            print(f"Cloudinary exception: {e}")
             return response.Response(
-                {'error': 'Failed to upload file to cloud storage'}, 
+                {'error': f'Cloudinary error: {str(e)}'}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+        
+        if not result:
+            print("Error: Cloudinary returned None")
+            return response.Response(
+                {'error': 'Failed to upload file to cloud storage. Check Cloudinary credentials.'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        
+        print(f"Cloudinary upload success: {result['url']}")
         
         # Save to database
         try:
             pdf = ReferencePDF.objects.create(
-                department_id=department_id if department_id != 'default' else None,
+                department_id=None,  # No department for now
                 cloudinary_public_id=result['public_id'],
                 cloudinary_url=result['url'],
                 filename=file.name,
                 file_size=result.get('bytes', 0),
                 note=note
             )
+            
+            print(f"Database save success, ID: {pdf.id}")
             
             return response.Response({
                 'status': 'success',
@@ -66,7 +79,7 @@ class UploadPDFView(views.APIView):
             }, status=status.HTTP_201_CREATED)
             
         except Exception as e:
-            # If DB save fails, delete from Cloudinary
+            print(f"Database error: {e}")
             cloudinary_service.delete_file(result['public_id'], resource_type="raw")
             return response.Response(
                 {'error': f'Database error: {str(e)}'}, 
@@ -75,17 +88,11 @@ class UploadPDFView(views.APIView):
 
 
 class ListPDFsView(views.APIView):
-    """List uploaded PDFs for the user's department."""
-    permission_classes = [permissions.IsAuthenticated]
+    """List uploaded PDFs."""
+    permission_classes = [permissions.AllowAny]  # Allow unauthenticated for testing
     
     def get(self, request):
-        department_id = getattr(request.user, 'department_id', None)
-        
-        # For testing, show all if no department
-        if department_id:
-            pdfs = ReferencePDF.objects.filter(department_id=department_id)
-        else:
-            pdfs = ReferencePDF.objects.all()
+        pdfs = ReferencePDF.objects.all()
         
         data = [{
             'id': str(pdf.id),
