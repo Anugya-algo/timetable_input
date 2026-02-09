@@ -1,12 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { useAuth } from "@clerk/nextjs";
 import Link from 'next/link';
 import { Upload, FileText, ArrowLeft, CheckCircle } from 'lucide-react';
 
 export default function UploadPDFPage() {
-    const { getToken } = useAuth();
     const [file, setFile] = useState<File | null>(null);
     const [note, setNote] = useState('');
     const [uploading, setUploading] = useState(false);
@@ -29,29 +27,29 @@ export default function UploadPDFPage() {
         setMessage(null);
 
         try {
-            const token = await getToken();
-
             // Create FormData for file upload
             const formData = new FormData();
             formData.append('file', file);
             formData.append('note', note);
+            formData.append('department', 'default');
 
             // Upload to backend (which uploads to Cloudinary)
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'}/documents/upload/`, {
+            const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+            console.log('Uploading to:', `${backendUrl}/documents/upload/`);
+
+            const response = await fetch(`${backendUrl}/documents/upload/`, {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
                 body: formData
             });
 
+            const result = await response.json();
+            console.log('Response:', result);
+
             if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.error || 'Upload failed');
+                throw new Error(result.error || 'Upload failed');
             }
 
-            const result = await response.json();
-            setMessage({ type: 'success', text: `PDF uploaded successfully! File: ${result.filename}` });
+            setMessage({ type: 'success', text: `PDF uploaded successfully! URL: ${result.url}` });
             setFile(null);
             setNote('');
 
@@ -60,8 +58,8 @@ export default function UploadPDFPage() {
             if (fileInput) fileInput.value = '';
 
         } catch (err: any) {
-            console.error(err);
-            setMessage({ type: 'error', text: err.message || 'Upload failed.' });
+            console.error('Upload error:', err);
+            setMessage({ type: 'error', text: err.message || 'Upload failed. Make sure the backend is running.' });
         } finally {
             setUploading(false);
         }
@@ -88,12 +86,12 @@ export default function UploadPDFPage() {
 
                 {/* Success/Error Message */}
                 {message && (
-                    <div className={`p-4 rounded-lg mb-6 flex items-center gap-3 ${message.type === 'success'
+                    <div className={`p-4 rounded-lg mb-6 flex items-start gap-3 ${message.type === 'success'
                             ? 'bg-green-50 text-green-800 border border-green-200'
                             : 'bg-red-50 text-red-800 border border-red-200'
                         }`}>
-                        {message.type === 'success' && <CheckCircle size={20} />}
-                        {message.text}
+                        {message.type === 'success' && <CheckCircle size={20} className="mt-0.5" />}
+                        <span className="break-all">{message.text}</span>
                     </div>
                 )}
 
