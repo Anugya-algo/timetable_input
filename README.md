@@ -1,44 +1,65 @@
-# Timetable Data Ingestion System
+# AcadSync Data Entry Admin
 
-A production-ready, backend-first system for collecting and validating university timetable data.
+A production-ready, internal data entry system for collecting and validating university timetable data.
+
+## Tech Stack
+
+### Frontend
+- **Next.js 16** (App Router)
+- **TypeScript**
+- **Tailwind CSS** (Blue/White theme)
+- **Clerk** - Authentication (Keyless mode supported)
+- **Lucide React** - Icons
+
+### Backend
+- **Django 5** + Django REST Framework
+- **SQLite** (dev) / PostgreSQL (production)
+- **Cloudinary** - PDF cloud storage
+- **JWT** - Clerk token verification
 
 ## Project Structure
 
-*   `backend/`: Django REST Framework (Python)
-*   `frontend/`: Next.js 14 App Router (TypeScript)
-
-## Prerequisites
-
-*   Python 3.10+
-*   Node.js 18+
-*   PostgreSQL (Optional for local dev, SQLite configured by default)
-*   AWS S3 Bucket (for PDF storage - optional, can be added later)
+```
+timetable_input/
+├── backend/                 # Django API
+│   ├── config/             # Django settings
+│   ├── core/               # Auth middleware
+│   ├── documents/          # PDF upload (Cloudinary)
+│   ├── meta/               # Faculty, Room, Subject models
+│   ├── timetable/          # TimetableEntry model
+│   └── requirements.txt
+├── frontend/               # Next.js App
+│   ├── app/
+│   │   ├── dashboard/      # Protected pages
+│   │   └── page.tsx        # Landing page
+│   ├── components/
+│   └── lib/
+└── README.md
+```
 
 ## Quick Start
 
-### 1. Backend (Django)
+### 1. Backend
 
 ```bash
 cd backend
-
-# Create virtual environment
 python -m venv venv
+venv\Scripts\activate          # Windows
+# source venv/bin/activate     # Linux/Mac
 
-# Activate (Windows)
-venv\Scripts\activate
-
-# Install dependencies
-pip install django djangorestframework psycopg2-binary django-cors-headers pyjwt requests boto3
-
-# Run migrations
-python manage.py makemigrations
+pip install -r requirements.txt
 python manage.py migrate
-
-# Start server
 python manage.py runserver
 ```
 
-### 2. Frontend (Next.js)
+**Environment (backend/.env):**
+```env
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_secret
+```
+
+### 2. Frontend
 
 ```bash
 cd frontend
@@ -46,31 +67,14 @@ npm install
 npm run dev
 ```
 
-That's it! Navigate to http://localhost:3000
+Open http://localhost:3000
 
-**Clerk Keyless Mode**: The app uses Clerk for authentication. You do NOT need to sign up for Clerk or configure API keys to start developing. Clerk automatically runs in **keyless mode** and handles everything. When you're ready for production, you can claim your application from the prompt in the bottom-right corner.
-
-## Environment Variables (Optional - For Production)
-
-### Backend (`backend/.env`)
-```env
-AWS_ACCESS_KEY_ID=your_aws_key
-AWS_SECRET_ACCESS_KEY=your_aws_secret
-AWS_STORAGE_BUCKET_NAME=your_bucket_name
-AWS_S3_REGION_NAME=us-east-1
-```
-
-### Frontend (`frontend/.env.local`)
-```env
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_...
-CLERK_SECRET_KEY=sk_live_...
-NEXT_PUBLIC_API_URL=http://127.0.0.1:8000/api/v1
-```
+**Clerk Keyless Mode:** No API keys needed for development. Clerk auto-configures.
 
 ## Features
 
-1.  **Department Isolation**: Users can only access data belonging to their department
-2.  **Validation**: Prevents overlapping room bookings and double-booked faculty
-3.  **S3 Integration**: Direct-to-S3 uploads via presigned URLs
-4.  **Modern UI**: Blue/White minimal theme using Tailwind CSS
-5.  **Keyless Auth**: Start developing immediately without Clerk account setup
+- ✅ **Department Isolation** - Users only access their department data
+- ✅ **PDF Upload** - Cloudinary cloud storage
+- ✅ **Validation** - Prevents scheduling conflicts
+- ✅ **Modern UI** - Clean blue/white theme
+- ✅ **Secure Auth** - Clerk JWT verification
