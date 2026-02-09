@@ -28,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-a-v7tg10k_e-i=cy1mb1(im+_kuuhhxbqg8=_8^ly8pvw=oxn2"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'timetable-input.onrender.com']
 
