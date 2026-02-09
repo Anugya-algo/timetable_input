@@ -1,0 +1,17 @@
+# Django
+Django>=5.0
+djangorestframework>=3.14
+django-cors-headers>=4.3
+
+# Database
+psycopg2-binary>=2.9
+
+# Authentication
+PyJWT>=2.8
+requests>=2.31
+
+# Cloud Storage
+cloudinary>=1.36
+
+# Environment
+python-dotenv>=1.0

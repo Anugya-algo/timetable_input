@@ -1,0 +1,27 @@
+# Timetable Data Ingestion System
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+venv/
+.env
+*.egg-info/
+db.sqlite3
+
+# Node
+node_modules/
+.next/
+.clerk/
+
+# Environment
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
