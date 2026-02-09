@@ -40,28 +40,6 @@ export default function Home() {
               </p>
             </div>
 
-            {/* How to Add Timetable Entry */}
-            <div className="mb-8 pb-8 border-b border-gray-200">
-              <h2 className="text-2xl font-bold text-black mb-4">
-                How to Add Timetable Entry
-              </h2>
-              <ol className="list-decimal pl-8 text-black space-y-3">
-                <li><strong>Sign In</strong> using the button above with your department credentials.</li>
-                <li>You will be redirected to your <strong>Dashboard</strong>.</li>
-                <li>Click <strong>"Add Timetable Entry"</strong> to schedule a class.</li>
-                <li>Fill in the form:
-                  <ul className="list-disc pl-6 mt-2 space-y-1">
-                    <li>Select <strong>Semester</strong> and <strong>Section</strong></li>
-                    <li>Choose <strong>Subject</strong> from your department's list</li>
-                    <li>Select <strong>Faculty</strong> member</li>
-                    <li>Pick <strong>Room</strong></li>
-                    <li>Set <strong>Day</strong> and <strong>Time Slot</strong></li>
-                  </ul>
-                </li>
-                <li>Click <strong>Save Entry</strong> – the system will automatically check for conflicts.</li>
-              </ol>
-            </div>
-
             {/* How to Upload PDF */}
             <div className="mb-8 pb-8 border-b border-gray-200">
               <h2 className="text-2xl font-bold text-black mb-4">
