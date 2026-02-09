@@ -1,1 +1,0 @@
-ALLOWED_HOSTS = ['timetable-input.onrender.com']
