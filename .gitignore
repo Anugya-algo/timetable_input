@@ -5,23 +5,48 @@ __pycache__/
 *.py[cod]
 *.so
 venv/
-.env
 *.egg-info/
+dist/
+build/
+*.egg
 db.sqlite3
+
+# Django
+*.log
+local_settings.py
+media/
 
 # Node
 node_modules/
 .next/
+out/
 .clerk/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Environment
+# Environment / Secrets
+.env
 .env.local
 .env.*.local
 
 # IDE
 .idea/
 .vscode/
+*.swp
+*.swo
+*~
 
 # OS
 .DS_Store
 Thumbs.db
+desktop.ini
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Misc
+*.bak
+*.tmp
