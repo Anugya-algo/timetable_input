@@ -1,5 +1,6 @@
 import cloudinary
 import cloudinary.uploader
+import cloudinary.utils
 from django.conf import settings
 
 # Configure Cloudinary
@@ -31,7 +32,8 @@ class CloudinaryService:
                 folder=folder,
                 resource_type=resource_type,
                 use_filename=True,
-                unique_filename=True
+                unique_filename=True,
+                access_mode='public'
             )
             return {
                 'url': result.get('secure_url'),
@@ -53,14 +55,17 @@ class CloudinaryService:
             return False
     
     def get_download_url(self, public_id, resource_type="raw"):
-        """Get a download URL for a file."""
+        """
+        Get a download URL using Cloudinary's archive API.
+        This bypasses CDN delivery restrictions (PDF/ZIP ACL block).
+        Returns a signed URL through api.cloudinary.com.
+        """
         try:
-            url = cloudinary.utils.cloudinary_url(
-                public_id,
-                resource_type=resource_type,
-                flags="attachment"
+            url = cloudinary.utils.download_archive_url(
+                public_ids=[public_id],
+                resource_type=resource_type
             )
-            return url[0] if url else None
+            return url
         except Exception as e:
-            print(f"Cloudinary URL error: {e}")
+            print(f"Cloudinary download URL error: {e}")
             return None

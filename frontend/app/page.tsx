@@ -36,7 +36,7 @@ export default function Home() {
                 <li>Scheduled class entries (faculty + room + subject + time)</li>
               </ul>
               <p className="text-black mt-4">
-                This data will be used by the <strong>automated timetable generation algorithm</strong> to create conflict-free schedules.
+                Save the file with nomenclature as <strong>"department_code_semester.pdf"</strong> and upload it to the portal. This data will be used by the <strong>automated timetable generation algorithm</strong> to create conflict-free schedules.
               </p>
             </div>
 
@@ -51,7 +51,7 @@ export default function Home() {
               <ol className="list-decimal pl-8 text-black space-y-2">
                 <li>Go to Dashboard and click <strong>"Upload Reference PDF"</strong></li>
                 <li>Click the file selector and choose your PDF (only .pdf files allowed)</li>
-                <li>Optionally add a note (e.g., "Fall 2025 Draft 1")</li>
+                <li>Optionally add a note (e.g., "CSE 3rd Semester")</li>
                 <li>Click <strong>"Upload PDF"</strong></li>
                 <li>The file is securely stored and linked to your department</li>
               </ol>
@@ -70,7 +70,7 @@ export default function Home() {
             {/* Sign In Prompt */}
             <div className="text-center mt-10 py-6 border-t border-gray-200">
               <p className="text-black text-lg">
-                Click <strong className="text-blue-600">Sign In</strong> above to get started.
+                Click <strong className="text-black-600">Sign In</strong> above to get started.
               </p>
             </div>
           </div>
